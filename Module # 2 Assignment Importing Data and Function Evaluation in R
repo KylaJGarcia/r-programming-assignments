@@ -1,0 +1,35 @@
+assignment2 <- c(16, 18, 14, 22, 27, 17, 19, 17, 17, 22, 20, 22)
+
+myMean <- function(assignment2) {
+  return(sum(assignment) / length(someData))
+}
+
+myMean(assignment2)
+
+
+#Outcome:
+
+
+Error in myMean(assignment2) : object 'assignment' not found
+
+
+#This happened because "assignemnt was never definded.
+#Looks like someData was never defined either. 
+
+
+#Fix the code
+
+assignment2 <- c(16, 18, 14, 22, 27, 17, 19, 17, 17, 22, 20, 22)
+
+myMean <- function(data) {
+  return(sum(data) / length(data))
+}
+
+myMean(assignment2)
+
+
+#Outcome
+
+[1] 19.25
+
+
