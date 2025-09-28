@@ -1,0 +1,45 @@
+# Assignment #5: matrix algebra in R
+
+# --- Create matrices A and B ---
+A <- matrix(1:100, nrow = 10)    # 10x10 singular matrix
+B <- matrix(1:1000, nrow = 10)   # 10x100 non-square matrix
+
+# --- Inspect dimensions ---
+dimA <- dim(A)  
+dimB <- dim(B)  
+
+cat("Dimensions of A:", dimA, "\n")
+cat("Dimensions of B:", dimB, "\n\n")
+
+# --- Determinant and Inverse for A with error handling ---
+detA <- det(A)
+if (detA != 0) {
+  invA <- solve(A)
+  cat("Determinant of A:", detA, "\n")
+  cat("Inverse of A (first 3x3 block):\n")
+  print(invA[1:3, 1:3])
+} else {
+  cat("Determinant of A is 0 → Matrix is singular; no inverse exists.\n")
+  cat("Using pseudo-inverse instead:\n")
+  if(!require(MASS)) install.packages("MASS")
+  library(MASS)
+  ginvA <- ginv(A)
+  print(ginvA[1:3, 1:3])
+}
+
+# --- Determinant and Inverse for B with tryCatch ---
+invB <- tryCatch(solve(B), error = function(e) e$message)
+detB <- tryCatch(det(B),   error = function(e) e$message)
+
+cat("\nAttempted determinant of B:", detB, "\n")
+cat("Attempted inverse of B:", invB, "\n")
+
+# --- Optional: Create a non-singular matrix for comparison ---
+set.seed(123)
+C <- matrix(runif(100, 1, 10), nrow = 10)
+detC <- det(C)
+invC <- solve(C)
+
+cat("\nDeterminant of C:", detC, "\n")
+cat("Inverse of C (first 3x3 block):\n")
+print(invC[1:3, 1:3])
