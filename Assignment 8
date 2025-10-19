@@ -1,0 +1,54 @@
+#Step 1: Import Assignment 6 Data
+# The uploaded file is comma-delimited, so use read.csv()
+student6 <- read.csv("Assignment 6 Dataset.txt", header = TRUE, stringsAsFactors = FALSE)
+
+# View the first few rows to confirm import
+head(student6)
+
+# Step 2: Load plyr package and compute the mean of Grade by Sex
+library(plyr)
+
+gender_mean <- ddply(
+  student6,
+  "Sex",
+  summarise,
+  GradeAverage = mean(Grade, na.rm = TRUE)
+)
+
+# Display results
+print(gender_mean)
+
+# Step 3: Write grouped means to a text file
+write.table(
+  gender_mean,
+  file = "gender_mean.txt",
+  sep = "\t",
+  row.names = FALSE
+)
+
+# Step 4: Filter Names Containing “i” (case-insensitive)
+i_students <- subset(
+  student6,
+  grepl("i", Name, ignore.case = TRUE)
+)
+
+# Display filtered data
+print(i_students)
+
+# Step 5: Write just the names to a CSV file
+write.csv(
+  i_students$Name,
+  file = "i_students.csv",
+  row.names = FALSE,
+  quote = FALSE
+)
+
+# Step 6: Write the full filtered dataset to a CSV file
+write.csv(
+  i_students,
+  file = "i_students_full.csv",
+  row.names = FALSE
+)
+
+# Step 7: Confirm files were written
+list.files(pattern = "gender_mean|i_students")
