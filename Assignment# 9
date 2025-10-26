@@ -1,0 +1,61 @@
+# Load the dataset
+bank <- read.csv("BankWages.csv", stringsAsFactors = TRUE)
+head(bank)
+str(bank)
+
+# ---------------------------------------------------------
+# 1. Base R Graphics
+# ---------------------------------------------------------
+
+# Scatter-like plot (Education by observation, colored by job)
+plot(bank$education,
+     col = as.numeric(bank$job),
+     pch = 19,
+     main = "Base R: Education Levels Colored by Job Type",
+     xlab = "Observation Index",
+     ylab = "Education (Years)")
+legend("topright", legend = levels(bank$job),
+       col = 1:length(levels(bank$job)), pch = 19, cex = 0.8)
+
+# Mosaic plot: Job by Gender
+mosaicplot(~ job + gender, data = bank,
+           main = "Base R: Job Type by Gender",
+           color = TRUE)
+
+# ---------------------------------------------------------
+# 2. Lattice Graphics
+# ---------------------------------------------------------
+library(lattice)
+
+# Education distribution by job type
+histogram(~ education | job, data = bank,
+          main = "Lattice: Education Distribution by Job Type",
+          xlab = "Education (Years)",
+          col = "lightblue")
+
+# Gender breakdown by job type
+barchart(~ gender | job, data = bank,
+         main = "Lattice: Gender by Job Type",
+         col = "lightgreen")
+
+# ---------------------------------------------------------
+# 3. ggplot2 Graphics
+# ---------------------------------------------------------
+library(ggplot2)
+
+# Boxplot: Education by Job type, colored by gender
+ggplot(bank, aes(x = job, y = education, fill = gender)) +
+  geom_boxplot() +
+  labs(title = "ggplot2: Education by Job Type and Gender",
+       x = "Job Type",
+       y = "Education (Years)") +
+  theme_minimal()
+
+# Faceted bar plot: Job type by minority status, faceted by gender
+ggplot(bank, aes(x = job, fill = minority)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~ gender) +
+  labs(title = "ggplot2: Job Type by Minority Status and Gender",
+       x = "Job Type",
+       y = "Count") +
+  theme_light()
