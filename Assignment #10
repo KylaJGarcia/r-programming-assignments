@@ -1,0 +1,20 @@
+Package: Friedman
+Title: Simple Data Visualization and Analysis Tools
+Version: 0.0.0.9000
+Authors@R: 
+    person("Kyla", "Garcia", email = "kyla.garcia@example.com", role = c("aut", "cre"))
+Description: The Friedman package provides simple and intuitive functions 
+    for cleaning, summarizing, and visualizing datasets. It is designed 
+    for students and beginner R users who want to explore data quickly 
+    using streamlined functions built on ggplot2 and dplyr.
+Depends: R (>= 3.1.2)
+Imports: 
+    ggplot2,
+    dplyr
+License: CC0
+LazyData: true
+URL: https://github.com/yourusername/Friedman
+BugReports: https://github.com/yourusername/Friedman/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
