@@ -1,0 +1,94 @@
+tukey.outlier <- function(x) {
+  if (!is.numeric(x)) stop("Input must be numeric.")
+  qnt <- quantile(x, probs = c(0.25, 0.75), na.rm = TRUE)
+  iqr <- qnt[2] - qnt[1]
+  lower <- qnt[1] - 1.5 * iqr
+  upper <- qnt[2] + 1.5 * iqr
+  return(x < lower | x > upper)
+}
+
+# -----------------------------------------------------------
+# 1. Original Buggy Function
+# -----------------------------------------------------------
+
+tukey_multiple <- function(x) {
+  outliers <- array(TRUE, dim = dim(x))
+  for (j in 1:ncol(x)) {
+    # BUG: Using && instead of & causes logical length mismatch
+    outliers[, j] <- outliers[, j] && tukey.outlier(x[, j])
+  }
+  outlier.vec <- vector("logical", length = nrow(x))
+  for (i in 1:nrow(x)) {
+    outlier.vec[i] <- all(outliers[i, ])
+  }
+  return(outlier.vec)
+}
+
+# -----------------------------------------------------------
+# 2. Test the Buggy Code
+# -----------------------------------------------------------
+
+set.seed(123)
+test_mat <- matrix(rnorm(50), nrow = 10)
+
+cat("---- Running buggy version ----\n")
+tryCatch(
+  tukey_multiple(test_mat),
+  error = function(e) cat("Error Message:\n", e$message, "\n")
+)
+
+# -----------------------------------------------------------
+# 3. Corrected Function with Defensive Programming
+# -----------------------------------------------------------
+
+corrected_tukey <- function(x) {
+  # Defensive checks
+  if (!is.matrix(x)) stop("Error: Input must be a matrix.")
+  if (!is.numeric(x)) stop("Error: Matrix must contain numeric values only.")
+  
+  outliers <- array(TRUE, dim = dim(x))
+  
+  for (j in seq_len(ncol(x))) {
+    # Corrected: element-wise &
+    outliers[, j] <- outliers[, j] & tukey.outlier(x[, j])
+  }
+  
+  outlier.vec <- logical(nrow(x))
+  for (i in seq_len(nrow(x))) {
+    outlier.vec[i] <- all(outliers[i, ])
+  }
+  
+  return(outlier.vec)
+}
+
+# -----------------------------------------------------------
+# 4. Test the Corrected Code
+# -----------------------------------------------------------
+
+cat("\n---- Running corrected version ----\n")
+result <- corrected_tukey(test_mat)
+print(result)
+
+# -----------------------------------------------------------
+# 5. Verification
+# -----------------------------------------------------------
+
+cat("\nCheck result length:", length(result), "\n")
+cat("All logical values:", all(result %in% c(TRUE, FALSE)), "\n")
+
+# -----------------------------------------------------------
+# 6. Example Defensive Checks
+# -----------------------------------------------------------
+
+cat("\n---- Testing Defensive Checks ----\n")
+tryCatch(
+  corrected_tukey(data.frame(a = 1:5, b = 6:10)),
+  error = function(e) cat("Non-matrix input error:\n", e$message, "\n")
+)
+
+tryCatch(
+  corrected_tukey(matrix(c("a", "b", "c", "d"), nrow = 2)),
+  error = function(e) cat("Non-numeric input error:\n", e$message, "\n")
+)
+
+cat("\n---- End of Script ----\n")
