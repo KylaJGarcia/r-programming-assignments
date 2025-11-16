@@ -1,0 +1,30 @@
+---
+title: "My R Markdown Primer"
+author: "Kyla Garcia"
+date: "2025-11-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+R Markdown lets you write text, run R code, and include math in one reproducible document.
+
+This document shows how Markdown text, R code, and math can work together.
+
+Inline math: $\alpha + \beta = \gamma$
+
+$$
+y = mx + b
+$$
+
+```{r}
+library(ggplot2)
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(title = "MPG vs Weight")
+
+summary(mtcars$mpg)
+```
